@@ -138,9 +138,9 @@ int main(){
     plaintext_wheel=wheel_generate();
     cipher_wheel=wheel_generate();
     wheel_uniqueness(plaintext_wheel,cipher_wheel);
-    sprintf(original_wheels,"Ciphertext Wheel:%s\nPlaintext Wheel:%s",cipher_wheel,plaintext_wheel);
+    sprintf(original_wheels,"Ciphertext Wheel: %s\nPlaintext Wheel: %s",cipher_wheel,plaintext_wheel);
     encoded=chaocipher_encode(plaintext_wheel,cipher_wheel,input_buffer);
-    sprintf(encoded_buffer,"%s\nEncoded text:%s\n",original_wheels,encoded);
+    sprintf(encoded_buffer,"%s\nEncoded text: %s\n",original_wheels,encoded);
     current_time= time(NULL);
     local_time= localtime(&current_time);
     strftime(filename,sizeof(filename),"chaocipher_%Y%m%d_%H%M%S.txt",local_time);
