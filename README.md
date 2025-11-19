@@ -9,6 +9,12 @@ An implementation in C of encoding a file using the extended Chaocipher cipher a
 2. Run the downloaded Chaocipher.exe file from the releases section
 3. Get the output from the chaocipher_YYYYMMDD_HH:MM:SS.txt file, which YYYYMMDD and HH:MM:SS represents the current date and time of the system at the time of encoding.
 
+In case you want to build the executable yourself, use the following command if you are using gcc:
+
+```
+gcc -o chaocipher chaocipher.c wheel_generator.c
+```
+
 
 
 # TODO
