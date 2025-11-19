@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
 #include <time.h>
 #include <ctype.h>
 #include "wheel_generator.h"
@@ -11,16 +10,16 @@ void letter_swap(char* wheel,char value1,char value2){
     wheel[value2]=old;
 }
 
-bool letter_comparison(char* wheel,char character){
+int index_finder(char* wheel,char character){
     if(strlen(wheel) == 0){
-        return true;
+        return -1;
     }
     for(int i=0; i<strlen(wheel);i++){
         if(wheel[i]== character){
-            return false;
+            return i;
         }
     }
-    return true;
+    return -1;
 }
 
 void wheel_uniqueness(char* wheel1,char* wheel2){
@@ -51,10 +50,10 @@ char* wheel_generate(){
     }
     for(int i=0; i<strlen(alphabet);i++){
         char random_letter = alphabet[rand()%length];
-        bool is_unique = letter_comparison(wheel,random_letter);
-        while(!is_unique){
+        int index = index_finder(wheel,random_letter);
+        while(index != -1){
             random_letter = alphabet[rand()%length];
-            is_unique=letter_comparison(wheel,random_letter);
+            index=index_finder(wheel,random_letter);
         }
         strncat(wheel,&random_letter,1);
     }

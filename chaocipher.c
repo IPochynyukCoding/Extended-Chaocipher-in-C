@@ -9,14 +9,6 @@
 #define second_index 1
 #define third_index 2
 #define fourth_index 3
-int index_finder(char* wheel, char letter){
-    for(int i=0; i<strlen(wheel);i++){
-        if(wheel[i]==letter){
-            return i;
-        }
-    }
-    return -1;
-}
 void strslice(char* original_string, char* slice,size_t start,size_t stop){
     strncpy(slice,original_string+start,stop-start);
     slice[stop-start]='\0';
@@ -155,7 +147,7 @@ int main(){
     output_file = fopen(filename,"w");
     if (output_file == NULL) {
         printf("Unable to open the file, exiting...\n");
-        return EXIT_FAILURE;
+        exit(EXIT_FAILURE);
     } 
     fprintf(output_file,encoded_buffer);
     fclose(output_file);
