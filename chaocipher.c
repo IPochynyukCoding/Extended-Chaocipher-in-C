@@ -29,8 +29,7 @@ char* ciphertext_shift(char* ciphertext_wheel,int index){
     //Split alphabet with the selected letter as the middle
     strslice(ciphertext_wheel,left,index,length);
     strslice(ciphertext_wheel,right,first_index,index);
-    strcat(new_wheel,left);
-    strcat(new_wheel,right);
+    sprintf(new_wheel,"%s%s",left,right);
     //Get letters from the third letter until the nadir (middle) for left side
     strslice(new_wheel,left,third_index,nadir);
     //Get letters from the nadir to the end for the right side
@@ -40,9 +39,7 @@ char* ciphertext_shift(char* ciphertext_wheel,int index){
     strslice(new_wheel,second_letter,second_index,third_index);
     strcat(left,second_letter);
     //Create the new wheel based on the above mentioned changes
-    strcpy(new_wheel,first_letter);
-    strcat(new_wheel,left);
-    strcat(new_wheel,right);
+    sprintf(new_wheel,"%s%s%s",first_letter,left,right);
     //Clean up memory
     free(ciphertext_wheel);
     free(left);
@@ -78,10 +75,7 @@ char* plaintext_shift(char* plaintext_wheel, int index){
     //Get all characters from the nadir to the end
     strslice(new_wheel,right,nadir,length);
     //Permutuate the new wheel
-    strcpy(new_wheel,first_characters);
-    strcat(new_wheel,left);
-    strcat(new_wheel,third_letter);
-    strcat(new_wheel,right);
+    sprintf(new_wheel,"%s%s%s%s",first_characters,left,third_letter,right);
     //Clean up memory
     free(plaintext_wheel);
     free(left);
