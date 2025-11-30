@@ -31,17 +31,19 @@ char* ciphertext_shift(char* ciphertext_wheel,int index){
     strslice(ciphertext_wheel,right,first_index,index);
     strcat(new_wheel,left);
     strcat(new_wheel,right);
-    //Get letters from the third letter until the nadir (middle) for left side and get letters from the nadir to the end for the right side
+    //Get letters from the third letter until the nadir (middle) for left side
     strslice(new_wheel,left,third_index,nadir);
+    //Get letters from the nadir to the end for the right side
     strslice(new_wheel,right,nadir,length);
+    //Get the first and second letters for the left side
     strslice(new_wheel,first_letter,first_index,second_index);
     strslice(new_wheel,second_letter,second_index,third_index);
-    //Add the second letter to the left side
     strcat(left,second_letter);
     //Create the new wheel based on the above mentioned changes
     strcpy(new_wheel,first_letter);
     strcat(new_wheel,left);
     strcat(new_wheel,right);
+    //Clean up memory
     free(ciphertext_wheel);
     free(left);
     free(right);
@@ -57,7 +59,7 @@ char* plaintext_shift(char* plaintext_wheel, int index){
     char* new_wheel = calloc(length+1,sizeof(char));
     char* third_letter = calloc(2,sizeof(char));
     char* first_characters = calloc(3,sizeof(char));
-    if(left == NULL||right== NULL||new_wheel == NULL){
+    if(left == NULL||right== NULL||new_wheel == NULL || third_letter == NULL || first_characters == NULL){
         printf("Unable to allocate memory");
         exit(EXIT_FAILURE);
     }
