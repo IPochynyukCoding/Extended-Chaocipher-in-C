@@ -39,7 +39,7 @@ char* ciphertext_shift(char* ciphertext_wheel,int index){
     strslice(new_wheel,second_letter,second_index,third_index);
     strcat(left,second_letter);
     //Create the new wheel based on the above mentioned changes
-    sprintf(new_wheel,"%s%s%s",first_letter,left,right);
+    snprintf(new_wheel,length+1,"%s%s%s",first_letter,left,right);
     //Clean up memory
     free(ciphertext_wheel);
     free(left);
@@ -75,7 +75,7 @@ char* plaintext_shift(char* plaintext_wheel, int index){
     //Get all characters from the nadir to the end
     strslice(new_wheel,right,nadir,length);
     //Permutuate the new wheel
-    sprintf(new_wheel,"%s%s%s%s",first_characters,left,third_letter,right);
+    snprintf(new_wheel,length+1,"%s%s%s%s",first_characters,left,third_letter,right);
     //Clean up memory
     free(plaintext_wheel);
     free(left);
@@ -115,7 +115,7 @@ int main(){
     char* plaintext_wheel;
     char* cipher_wheel;
     char* encoded;
-    static char filename[96];
+    char filename[128];
     FILE* input_file;
     FILE* output_file;
     time_t current_time;
@@ -134,9 +134,9 @@ int main(){
     plaintext_wheel=wheel_generate();
     cipher_wheel=wheel_generate();
     wheel_uniqueness(plaintext_wheel,cipher_wheel);
-    sprintf(original_wheels,"Ciphertext Wheel: %s\nPlaintext Wheel: %s",cipher_wheel,plaintext_wheel);
+    snprintf(original_wheels,512,"Ciphertext Wheel: %s\nPlaintext Wheel: %s",cipher_wheel,plaintext_wheel);
     encoded=chaocipher_encode(plaintext_wheel,cipher_wheel,input_buffer);
-    sprintf(encoded_buffer,"%s\nEncoded text: %s\n",original_wheels,encoded);
+    snprintf(encoded_buffer,32768,"%s\nEncoded text: %s\n",original_wheels,encoded);
     current_time= time(NULL);
     local_time= localtime(&current_time);
     strftime(filename,sizeof(filename),"chaocipher_%Y%m%d_%H%M%S.txt",local_time);
