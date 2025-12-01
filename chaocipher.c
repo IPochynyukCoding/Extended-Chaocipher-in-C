@@ -68,7 +68,7 @@ char* plaintext_shift(char* plaintext_wheel, int index){
     strcat(new_wheel,right);
     //Get the first two characters for the left side
     strslice(new_wheel,first_characters,first_index,third_index);
-    //Crave out the third character to put to middle
+    //Get the third character to put to middle
     strslice(new_wheel,third_letter,third_index,fourth_index);
     //Get all characters from the fourth character to the nadir for the left side
     strslice(new_wheel,left,fourth_index,nadir);
