@@ -21,6 +21,6 @@ gcc -o chaocipher chaocipher.c wheel_generator.c
 
 Implement decoding method based on the outputs from the encoded files
 
-Allow user to select a Chaocipher alphabet with a combination of either uppercase, lowercase, numbers, or symbols.
+~~Allow user to select a Chaocipher alphabet with a combination of either uppercase, lowercase, numbers, or symbols.~~ (Implemented on 3 January 2026 in Version 1.1)
 
 Allow for multi-line encoding instead of just one line

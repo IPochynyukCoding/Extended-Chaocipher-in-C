@@ -3,5 +3,5 @@
 void letter_swap(char* wheel,char value1,char value2);
 int index_finder(char* wheel,char character);
 void wheel_uniqueness(char* wheel1,char* wheel2);
-char* wheel_generate();
+char* wheel_generate(char* character_set);
 #endif

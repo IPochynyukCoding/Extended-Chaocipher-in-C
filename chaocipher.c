@@ -4,14 +4,31 @@
 #include <stdbool.h>
 #include <ctype.h>
 #include <time.h>
+#include <errno.h>
 #include "wheel_generator.h"
 #define first_index 0
 #define second_index 1
 #define third_index 2
 #define fourth_index 3
+#define array_length(array,type)(sizeof(array)/sizeof(type))
+
+struct choices{
+    char* label;
+    char* character_set;
+    bool is_selected;
+};
+
 void strslice(char* original_string, char* slice,size_t start,size_t stop){
     strncpy(slice,original_string+start,stop-start);
     slice[stop-start]='\0';
+}
+
+char* case_insensitive(char* input, bool is_upper){
+    char* copy=calloc(strlen(input)+1,sizeof(char));
+    for(int i=0;i<strlen(input);i++){
+        copy[i]= is_upper?toupper(input[i]):tolower(input[i]);
+    }
+    return copy;
 }
 
 char* ciphertext_shift(char* ciphertext_wheel,int index){
@@ -23,10 +40,10 @@ char* ciphertext_shift(char* ciphertext_wheel,int index){
     char* first_letter = calloc(2,sizeof(char));
     char* second_letter = calloc(2,sizeof(char));
     if(left == NULL||right== NULL||new_wheel == NULL || first_letter == NULL || second_letter == NULL){
-        printf("Unable to allocate memory");
+        printf("Unable to allocate memory for ciphertext shifting\n");
         exit(EXIT_FAILURE);
     }
-    //Split alphabet with the selected letter as the middle
+    //Split selected_character_set with the selected letter as the middle
     strslice(ciphertext_wheel,left,index,length);
     strslice(ciphertext_wheel,right,first_index,index);
     sprintf(new_wheel,"%s%s",left,right);
@@ -57,7 +74,7 @@ char* plaintext_shift(char* plaintext_wheel, int index){
     char* third_letter = calloc(2,sizeof(char));
     char* first_characters = calloc(3,sizeof(char));
     if(left == NULL||right== NULL||new_wheel == NULL || third_letter == NULL || first_characters == NULL){
-        printf("Unable to allocate memory");
+        printf("Unable to allocate memory for plaintext shifting\n");
         exit(EXIT_FAILURE);
     }
     //Get all characters from the character next to the selected character to the end as the left side
@@ -85,11 +102,11 @@ char* plaintext_shift(char* plaintext_wheel, int index){
     return new_wheel;
 }
 
-char* chaocipher_encode(char* plain_wheel, char* cipher_wheel,char* input){
+char* chaocipher_function(char* plain_wheel, char* cipher_wheel,char* input){
     char* encoded= calloc(strlen(input)+1,sizeof(char));
     int index;
     if (encoded == NULL){
-        printf("Unable to allocate memory, quitting...");
+        printf("Unable to allocate memory to encoding, quitting...\n");
         exit(EXIT_FAILURE);
     }
     for(size_t i=0;i<strlen(input);i++){
@@ -108,20 +125,39 @@ char* chaocipher_encode(char* plain_wheel, char* cipher_wheel,char* input){
     return encoded;
 }
 
+
 int main(){
+    for(;;){
     char* input_buffer = calloc(16384,sizeof(char));
     char* encoded_buffer=calloc(32768,sizeof(char));
     char* original_wheels = calloc(512,sizeof(char));
+    char* selected_character_set = calloc(128,sizeof(char));
+    char* case_insensitive_buffer=calloc(16384,sizeof(char));
     char* plaintext_wheel;
     char* cipher_wheel;
     char* encoded;
+    char buffer[16];
+    char buffer_2[16];
+    char buffer_3[16];
     char filename[128];
+    char selection_label[16];
     FILE* input_file;
     FILE* output_file;
     time_t current_time;
     struct tm* local_time;
-    if (input_buffer == NULL || encoded_buffer ==NULL || original_wheels==NULL){
-        printf("Unable to allocate memory, quitting...");
+    bool is_finished;
+    bool is_case_insensitive;
+    struct choices choice_array[4] = {
+        {"Uppercase letters","ABCDEFGHIJKLMNOPQRSTUVWXYZ",false},
+        {"Lowercase letters","abcdefghijklmnopqrstuvwxyz",false},
+        {"Numbers","0123456789",false},
+        {"Symbols","@#&[]{}/,.?!:;()$*~_^|+-<>`'",false}
+    };  
+    int array_len=array_length(choice_array,choice_array[first_index]);
+    bool is_uppercase=choice_array[first_index].is_selected;
+    bool is_lowercase=choice_array[second_index].is_selected;
+    if (input_buffer == NULL || encoded_buffer ==NULL || original_wheels==NULL ||selected_character_set==NULL){
+        printf("Unable to allocate memory, quitting...\n");
         exit(EXIT_FAILURE);
     }
     srand(time(NULL));
@@ -131,11 +167,77 @@ int main(){
         exit(EXIT_FAILURE);
     }
     fclose(input_file);
-    plaintext_wheel=wheel_generate();
-    cipher_wheel=wheel_generate();
+    do{
+        if(strlen(selected_character_set)>0){
+            printf("%s\n",selected_character_set);
+            printf("Press 'enter' to finish selection\n");
+        }
+        printf("Enter a number between 1 and 4 or press 'q' to quit: ");
+        if(!fgets(buffer,16,stdin)){
+            printf("Unable to get a reading, exiting...\n");
+            exit(EXIT_FAILURE);
+        }
+        char *endptr;
+        errno = 0;
+        long selection=strtol(buffer,&endptr,10);
+        if(strlen(buffer)==2 && strnicmp(buffer,"q",1)==0){
+            printf("Thank you for running the extended chaocipher program, exiting...\n");
+            exit(EXIT_SUCCESS);
+        }
+        else if(endptr==buffer && strlen(selected_character_set)>0 && *endptr == '\n'){
+            
+            printf("Are you sure you are finished?\nYour current character set is: %s\nPress 'y' to continue with your character set for the cipher, 'q' to quit, or anything else to get out of this prompt: ",selected_character_set);
+            if(!fgets(buffer_2,16,stdin)){
+                printf("Unable to get a reading, exiting...\n");
+                exit(EXIT_FAILURE);
+            }
+            if(strlen(buffer_2)==2 && strnicmp(buffer_2,"y",1)==0){
+                if(is_uppercase+is_lowercase<2){
+                strcpy(selection_label,is_uppercase? "uppercase":"lowercase");
+                printf("Do you want your input to be case-insensitive (i.e, treat all letters as %s)\nPress 'y' to change all letters to %s, 'n' for no, 'q' to quit, or anything else to get out of this prompt: ",selection_label,selection_label);
+                if(!fgets(buffer_3,16,stdin)){
+                printf("Unable to get a reading, exiting...\n");
+                exit(EXIT_FAILURE);
+                }
+                if(strlen(buffer_3)==2 && strnicmp(buffer_3,"y",1)==0){
+                    case_insensitive_buffer=case_insensitive(input_buffer,is_uppercase);
+                    is_finished=true;
+                }
+                else if(strlen(buffer_3)==2 && strnicmp(buffer_3,"n",1)==0){
+                    is_finished=true;
+                }
+                else if(strlen(buffer_3)==2 && strnicmp(buffer_3,"q",1)==0){
+                printf("Thank you for running the extended chaocipher program, exiting...\n");
+                exit(EXIT_SUCCESS);
+                }
+                else{
+                continue;
+                 }
+                }
+            }
+            else if(strlen(buffer_2)==2 && strnicmp(buffer_2,"q",1)==0){
+                printf("Thank you for running the extended chaocipher program, exiting...\n");
+                exit(EXIT_SUCCESS);
+            }
+        }
+        //For invalid inputs
+        else if(errno==ERANGE || selection<=0 || selection>4){
+            printf("Please input a valid number between 1 and 4, as your input is out of bounds\n");
+        }
+        else if(1<=selection<=array_len && !choice_array[selection-1].is_selected){
+            choice_array[selection-1].is_selected=true;
+            is_uppercase=choice_array[first_index].is_selected;
+            is_lowercase=choice_array[second_index].is_selected;
+            strcat(selected_character_set,choice_array[selection-1].character_set);
+            printf("Added %s into the character set\n",choice_array[selection-1].label);
+            printf("Current set:%s\n",selected_character_set);
+        }
+    }while(!is_finished);
+    plaintext_wheel=wheel_generate(selected_character_set);
+    cipher_wheel=wheel_generate(selected_character_set);
     wheel_uniqueness(plaintext_wheel,cipher_wheel);
     snprintf(original_wheels,512,"Ciphertext Wheel: %s\nPlaintext Wheel: %s",cipher_wheel,plaintext_wheel);
-    encoded=chaocipher_encode(plaintext_wheel,cipher_wheel,input_buffer);
+    encoded=chaocipher_function(plaintext_wheel,cipher_wheel,input_buffer);
     snprintf(encoded_buffer,32768,"%s\nEncoded text: %s\n",original_wheels,encoded);
     current_time= time(NULL);
     local_time= localtime(&current_time);
@@ -147,8 +249,13 @@ int main(){
     } 
     fprintf(output_file,encoded_buffer);
     fclose(output_file);
+    printf("Successfully created %s!\n",filename);
+    free(selected_character_set);
     free(input_buffer);
     free(encoded_buffer);
     free(original_wheels);
+    free(case_insensitive_buffer);
+    free(encoded);
+    }
     return EXIT_SUCCESS;
 }

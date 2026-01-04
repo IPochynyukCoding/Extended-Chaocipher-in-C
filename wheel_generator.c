@@ -40,22 +40,21 @@ void wheel_uniqueness(char* wheel1,char* wheel2){
     }
 }
 
-char* wheel_generate(){
-    char alphabet[]="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#&[]{}/,.?!:;()$*~_^|+-<>`'";
-    int length = strlen(alphabet);
+char* wheel_generate(char* character_set){
+    int length = strlen(character_set);
     char* wheel= (char *)calloc(length+1,sizeof(char));
     if(wheel == NULL){
-        printf("Unable to allocate memory, quitting...");
+        printf("Unable to allocate memory, quitting...\n");
         exit(EXIT_FAILURE);
     }
-    for(int i=0; i<strlen(alphabet);i++){
-        char random_letter = alphabet[rand()%length];
+    for(int i=0; i<length;i++){
+        char random_letter = character_set[rand()%length];
         int index = index_finder(wheel,random_letter);
         while(index != -1){
-            random_letter = alphabet[rand()%length];
+            random_letter = character_set[rand()%length];
             index=index_finder(wheel,random_letter);
         }
-        strncat(wheel,&random_letter,1);
+        wheel[i]=random_letter;
     }
     return wheel;
 }
