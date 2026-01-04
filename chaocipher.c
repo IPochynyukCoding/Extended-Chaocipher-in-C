@@ -190,7 +190,6 @@ int main(){
         exit(EXIT_SUCCESS);
     }
     }while (!input_confirmation);
-    selected_character_set[first_index]='\0';
     do{
         if(strlen(selected_character_set)>0){
             printf("%s\n",selected_character_set);
@@ -240,6 +239,7 @@ int main(){
                 continue;
                  }
                 }
+                is_finished=true;
             }
             else if(strlen(character_set_confirmation)==2 && strnicmp(character_set_confirmation,"q",1)==0){
                 printf("Thank you for running the extended chaocipher program, exiting...\n");
