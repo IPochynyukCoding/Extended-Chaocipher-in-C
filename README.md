@@ -1,26 +1,36 @@
 
 # Description
-An implementation in C of encoding a file using the extended Chaocipher cipher alphabet (ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#&[]{}/,.?!:;()$*~_^|+-<>`') to make the cipher more secure and harder to brute force.
+An implementation in C of encoding and decoding the extended Chaocipher cipher alphabet (ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#&[]{}/,.?!:;()$*~_^|+-<>`') to make the cipher more secure and harder to brute force.
 
 
 # How to use
+## Encoding 
+1. Type the input into the to_encode.txt file
+2. Run the downloaded chaocipher_encode.exe file from the releases section
+3. Confirm the file input is correct.
+4. Customize your character set using lowercase letters, uppercase letters, numbers, and symbols
+    4.1: If you don't select both lowercase and uppercase letters, you will get an additional confirmation to make your output case-insensitive
+5. Confirm your character set selection.
+6. Get the output from the chaocipher_encoded_YYYYMMDD_HH:MM:SS.txt file, which YYYYMMDD and HH:MM:SS represents the current date and time of the system at the time of encoding. The output contains the original wheels for encoding, alongside the encoded output.
 
-1. Type the input in the to_encode.txt file
-2. Run the downloaded Chaocipher.exe file from the releases section
-3. Get the output from the chaocipher_YYYYMMDD_HH:MM:SS.txt file, which YYYYMMDD and HH:MM:SS represents the current date and time of the system at the time of encoding.
+## Decoding
+1. Input your encoded text
+2. Input your ciphertext wheel
+3. Input your plaintext wheel
+4. If both wheel's base character set and length do not match, try to change your wheels and/or input to ensure you get it right.
+5. Confirm all your inputs are correct
+6. Get the output from the chaocipher_decoded_YYYYMMDD_HH:MM:SS.txt file, which YYYYMMDD and HH:MM:SS represents the current date and time of the system at the time of decoding. The output contains the original wheels for decoding, alongside the decoded output.
 
-In case you want to build the executable yourself, use the following command if you are using gcc:
+In case you want to build the executable yourself, use the following commands if you are using gcc:
+
+Encoding:
 
 ```
-gcc -o chaocipher chaocipher.c wheel_generator.c
+gcc -o chaocipher_encode chaocipher_encode.c chaocipher_functionality.c wheel_generator.c
 ```
 
+Decoding:
 
-
-# TODO
-
-Implement decoding method based on the outputs from the encoded files
-
-~~Allow user to select a Chaocipher alphabet with a combination of either uppercase, lowercase, numbers, or symbols.~~ (Implemented on 3 January 2026 in Version 1.1)
-
-Allow for multi-line encoding instead of just one line
+```
+gcc -o chaocipher_decode chaocipher_decode.c chaocipher_functionality.c wheel_generator.c
+```
