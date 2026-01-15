@@ -116,7 +116,7 @@ int main(){
         }while(!is_same_set);
         }
     do{
-        printf("Encoded input:%sCiphertext wheel:%sPlaintext wheel:%sPress 1 to change the input, 2 to change the ciphertext wheel, 3 to change the plaintext wheel, or 'enter' to confirm your choices: ",encoded_input,ciphertext_wheel,plaintext_wheel);
+        printf("Encoded input:%s\nCiphertext wheel:%s\nPlaintext wheel:%s\nPress 1 to change the input, 2 to change the ciphertext wheel, 3 to change the plaintext wheel, or 'enter' to confirm your choices: ",encoded_input,ciphertext_wheel,plaintext_wheel);
             if(!fgets(correction_buffer,16,stdin)){
         printf("Unable to access input, exiting...\n");
         exit(EXIT_FAILURE);
