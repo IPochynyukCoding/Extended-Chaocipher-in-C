@@ -5,7 +5,7 @@ An implementation in C of encoding and decoding the extended Chaocipher cipher a
 
 # How to use
 ## Encoding 
-1. Input the tex you want to encode
+1. Input the text you want to encode
 2. Customize your character set using lowercase letters, uppercase letters, numbers, and symbols
     
     2.1: If you don't select both lowercase and uppercase letters, you will get an additional confirmation to make your output case-insensitive
