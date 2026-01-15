@@ -105,18 +105,16 @@ int main(){
         }while(strlen(ciphertext_wheel) != strlen(plaintext_wheel));
     }
     is_same_set=wheel_set_checker(ciphertext_wheel,plaintext_wheel);
-    if(!is_same_set){
-        do{
+    while(!is_same_set){
         printf("The ciphertext and plaintext base character set do not match\nCiphertext Wheel:%s\nPlaintext Wheel:%s\nPress 1 to change the input, 2 to change the ciphertext wheel, or 3 to change the plaintext wheel: ",ciphertext_wheel,plaintext_wheel);
         numerical_selection(ciphertext_wheel,plaintext_wheel,correction_buffer,ciphertext_wheel_buffer,plaintext_wheel_buffer,correction_buffer,encoded_input,encoded_buffer,is_confirmed,false);
         is_same_set=wheel_set_checker(ciphertext_wheel,plaintext_wheel);
         if(is_same_set){
             break;
         }
-        }while(!is_same_set);
-        }
+        };
     do{
-        printf("Encoded input:%s\nCiphertext wheel:%s\nPlaintext wheel:%s\nPress 1 to change the input, 2 to change the ciphertext wheel, 3 to change the plaintext wheel, or 'enter' to confirm your choices: ",encoded_input,ciphertext_wheel,plaintext_wheel);
+        printf("Encoded input:%sCiphertext wheel:%sPlaintext wheel:%sPress 1 to change the input, 2 to change the ciphertext wheel, 3 to change the plaintext wheel, or 'enter' to confirm your choices: ",encoded_input,ciphertext_wheel,plaintext_wheel);
             if(!fgets(correction_buffer,16,stdin)){
         printf("Unable to access input, exiting...\n");
         exit(EXIT_FAILURE);
