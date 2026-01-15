@@ -23,7 +23,7 @@ struct choices{
 };
 
 void get_input(char* buffer){
-    printf("Input your message to be encoded: ");
+    printf("Input your message to be encoded or press 'q' to quit: ");
     if(!fgets(buffer,16384,stdin)){
         printf("Unable to get a reading, exiting...\n");
         exit(EXIT_FAILURE);
