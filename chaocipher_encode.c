@@ -106,7 +106,7 @@ int main(){
         }
         else if(endptr==selection_confirmation && strlen(selected_character_set)>0 && *endptr == '\n'){
             
-            printf("Are you sure you are finished?\nYour current character set is: %s\nYour input is:%s\nPress 'y' to continue with your character set for the cipher, 'q' to quit, 'i' to change the input, or anything else to change the wheel configuration: ",selected_character_set,input_buffer);
+            printf("Are you sure you are finished?\nYour current character set is: %s\nYour input is: %s\nPress 'y' to continue with your character set for the cipher, 'q' to quit, 'i' to change the input, or anything else to change the wheel configuration: ",selected_character_set,input_buffer);
             if(!fgets(character_set_confirmation,16,stdin)){
                 printf("Unable to get a reading, exiting...\n");
                 exit(EXIT_FAILURE);
