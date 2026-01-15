@@ -1,3 +1,4 @@
 *.exe
 /.vscode
 chaocipher_*.txt
+to_encode.txt

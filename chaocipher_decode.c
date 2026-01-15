@@ -18,13 +18,13 @@ int character_sort(const void* a,const void* b){
 }
 
 void message_prompt(char* final_buffer, char* intermediary_buffer,char* input_message,size_t buffer_size){
-    printf(input_message);
+    printf("%s",input_message);
     if(!fgets(intermediary_buffer,buffer_size,stdin)){
         printf("Unable to access input, exiting...\n");
         exit(EXIT_FAILURE);
     }
     if(strlen(intermediary_buffer)==2 && strnicmp(intermediary_buffer,"q",1)==0){
-        printf("hank you for running the Chaocipher decoder, exiting...\n");
+        printf("Thank you for running the Chaocipher decoder, exiting...\n");
         exit(EXIT_SUCCESS);
     }
     strncpy(final_buffer,intermediary_buffer,strlen(intermediary_buffer)+1);
@@ -157,7 +157,7 @@ int main(){
         printf("Unable to open the file, exiting...\n");
         exit(EXIT_FAILURE);
     } 
-    fprintf(output_file,decoded_input);
+    fprintf(output_file,"%s",decoded_input);
     fclose(output_file);
     printf("Successfully created %s!\n",file_name);
     free(encoded_input);

@@ -22,6 +22,20 @@ struct choices{
     bool is_selected;
 };
 
+void get_input(char* buffer){
+    printf("Input your message to be encoded: ");
+    if(!fgets(buffer,16384,stdin)){
+        printf("Unable to get a reading, exiting...\n");
+        exit(EXIT_FAILURE);
+    }
+    if(strlen(buffer)==2 && strnicmp(buffer,"q",1)==0){
+        printf("Thank you for running the Chaocipher encoder, exiting...\n");
+        exit(EXIT_SUCCESS);
+    }
+    buffer[strcspn(buffer,"\n")]=0;
+}
+
+
 void menu_selection(struct choices* array, int size){
     for(int i=0;i<size;i++){
         printf("%d. %s\n",i+1,array[i].label);
@@ -46,17 +60,14 @@ int main(){
     char* plaintext_wheel;
     char* cipher_wheel;
     char* encoded;
-    char file_confirmation[16];
     char selection_confirmation[16];
     char character_set_confirmation[16];
     char case_confirmation[16];
     char filename[128];
     char selection_label[16];
-    FILE* input_file;
     FILE* output_file;
     time_t current_time;
     struct tm* local_time;
-    bool input_confirmation=false;
     bool is_finished=false;
     bool is_case_insensitive=false;
     bool is_decode=false;
@@ -69,31 +80,12 @@ int main(){
     int array_len=array_length(choice_array,choice_array[first_index]);
     bool is_uppercase=choice_array[first_index].is_selected;
     bool is_lowercase=choice_array[second_index].is_selected;
-    if (input_buffer == NULL || encoded_buffer ==NULL || original_wheels==NULL ||selected_character_set==NULL){
+    if (input_buffer == NULL || encoded_buffer ==NULL || original_wheels==NULL ||selected_character_set==NULL ||case_insensitive_buffer==NULL){
         printf("Unable to allocate memory, quitting...\n");
         exit(EXIT_FAILURE);
     }
     srand(time(NULL));
-    do{
-    input_file = fopen("to_encode.txt","r");
-    if(input_file==NULL ||!fgets(input_buffer,16384,input_file)){
-        printf("Unable to read the file, exiting...");
-        exit(EXIT_FAILURE);
-    }
-    fclose(input_file);
-    printf("Your input is %s\nDo you want to use this text to encode?\nPress 'y' for yes, 'q' for quit, or anything else to give you time to edit your input: ",input_buffer);
-    if(!fgets(file_confirmation,16,stdin)){
-        printf("Unable to get a reading, exiting...\n");
-        exit(EXIT_FAILURE);
-            }
-    if(strlen(file_confirmation)==2 && strnicmp(file_confirmation,"y",1)==0){
-            input_confirmation=true;
-        }
-    else if(strlen(file_confirmation)==2 && strnicmp(file_confirmation,"q",1)==0){
-        printf("Thank you for running the Chaocipher encoder, exiting...\n");
-        exit(EXIT_SUCCESS);
-    }
-    }while (!input_confirmation);
+    get_input(input_buffer);
     do{
         if(strlen(selected_character_set)>0){
             printf("%s\n",selected_character_set);
@@ -114,7 +106,7 @@ int main(){
         }
         else if(endptr==selection_confirmation && strlen(selected_character_set)>0 && *endptr == '\n'){
             
-            printf("Are you sure you are finished?\nYour current character set is: %s\nPress 'y' to continue with your character set for the cipher, 'q' to quit, or anything else to get out of this prompt: ",selected_character_set);
+            printf("Are you sure you are finished?\nYour current character set is: %s\nYour input is:%s\nPress 'y' to continue with your character set for the cipher, 'q' to quit, 'i' to change the input, or anything else to change the wheel configuration: ",selected_character_set,input_buffer);
             if(!fgets(character_set_confirmation,16,stdin)){
                 printf("Unable to get a reading, exiting...\n");
                 exit(EXIT_FAILURE);
@@ -122,7 +114,7 @@ int main(){
             if(strlen(character_set_confirmation)==2 && strnicmp(character_set_confirmation,"y",1)==0){
                 if(is_uppercase+is_lowercase<2){
                 strcpy(selection_label,is_uppercase? "uppercase":"lowercase");
-                printf("Do you want your input to be case-insensitive (i.e, treat all letters as %s)\nPress 'y' to change all letters to %s, 'n' for no, 'q' to quit, or anything else to get out of this prompt: ",selection_label,selection_label);
+                printf("Do you want your input to be case-insensitive (i.e, treat all letters as %s)\nPress 'y' to change all letters to %s, 'n' for no, 'q' to quit, or anything else to change the wheel configuration: ",selection_label,selection_label);
                 if(!fgets(case_confirmation,16,stdin)){
                 printf("Unable to get a reading, exiting...\n");
                 exit(EXIT_FAILURE);
@@ -148,6 +140,9 @@ int main(){
             else if(strlen(character_set_confirmation)==2 && strnicmp(character_set_confirmation,"q",1)==0){
                 printf("Thank you for running the Chaocipher encoder, exiting...\n");
                 exit(EXIT_SUCCESS);
+            }
+            else if(strlen(character_set_confirmation)==2 && strnicmp(character_set_confirmation,"i",1)==0){
+                get_input(input_buffer);
             }
         }
         //For invalid inputs
@@ -180,7 +175,7 @@ int main(){
         printf("Unable to open the file, exiting...\n");
         exit(EXIT_FAILURE);
     } 
-    fprintf(output_file,encoded_buffer);
+    fprintf(output_file,"%s",encoded_buffer);
     fclose(output_file);
     printf("Successfully created %s!\n",filename);
     free(selected_character_set);
