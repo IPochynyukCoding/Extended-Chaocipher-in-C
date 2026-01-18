@@ -30,7 +30,7 @@ void message_prompt(char* final_buffer, char* intermediary_buffer,char* input_me
     strncpy(final_buffer,intermediary_buffer,strlen(intermediary_buffer)+1);
 }
 
-void numerical_selection(char* ciphertext_wheel,char* plaintext_wheel,char* buffer,char* ciphertext_wheel_buffer,char* plaintext_wheel_buffer, char* correction_buffer, char* encoded_input, char* encoded_buffer, bool confirmation_toggle,bool is_confirmation){
+bool numerical_selection(char* ciphertext_wheel,char* plaintext_wheel,char* buffer,char* ciphertext_wheel_buffer,char* plaintext_wheel_buffer, char* correction_buffer, char* encoded_input, char* encoded_buffer,bool is_confirmation){
     if(!fgets(correction_buffer,16,stdin)){
         printf("Unable to access input, exiting...\n");
         exit(EXIT_FAILURE);
@@ -43,32 +43,35 @@ void numerical_selection(char* ciphertext_wheel,char* plaintext_wheel,char* buff
             exit(EXIT_SUCCESS);
         }
     else if(endptr==correction_buffer && *endptr == '\n' && is_confirmation){
-        confirmation_toggle=true;
+        return true;
     }
-    else if(selection ==1){
-        message_prompt(encoded_input,encoded_buffer,"Enter the encoded input: ",16384);
-        }
-    else if(selection==2){
-        message_prompt(ciphertext_wheel,ciphertext_wheel_buffer,"Enter the ciphertext wheel: ",128);
-        }
-    else if(selection==3){
-        message_prompt(plaintext_wheel,plaintext_wheel_buffer,"Enter the plaintext wheel: ",128);
+    switch(selection){
+        case 1:
+            message_prompt(encoded_input,encoded_buffer,"Enter the encoded input: ",16384);
+            break;
+        case 2:
+            message_prompt(ciphertext_wheel,ciphertext_wheel_buffer,"Enter the ciphertext wheel: ",128);
+            break;
+        case 3:
+            message_prompt(plaintext_wheel,plaintext_wheel_buffer,"Enter the plaintext wheel: ",128);
+            break;
     }
+        return false;
 }
 
-bool wheel_set_checker(char* ciphertext_wheel,char* plaintext_wheel){
-    char sorted_ciphertext[128];
-    char sorted_plaintext[128];
+bool sorted_wheel_check(char* ciphertext_wheel,char* plaintext_wheel){
+    char* sorted_ciphertext=calloc(strlen(ciphertext_wheel)+1,sizeof(char));
+    char* sorted_plaintext=calloc(strlen(plaintext_wheel)+1,sizeof(char));
     strcpy(sorted_ciphertext,ciphertext_wheel);
     strcpy(sorted_plaintext,plaintext_wheel);
     qsort(sorted_ciphertext,strlen(sorted_ciphertext),sizeof(char),character_sort);
     qsort(sorted_plaintext,strlen(sorted_plaintext),sizeof(char),character_sort);
     printf("Sorted Ciphertext:%s\nSorted Plaintext:%s\n",sorted_ciphertext,sorted_plaintext);
     int result=strcmp(sorted_ciphertext,sorted_plaintext);
+    free(sorted_ciphertext);
+    free(sorted_plaintext);
     return result==0?true:false;
 }
-
-
 
 int main(){
     printf("Welcome to the Chaocipher decoding program!\nPress 'q' at any time to quit the program!\n");
@@ -98,47 +101,21 @@ int main(){
     message_prompt(encoded_input,encoded_buffer,"Enter the encoded output to decode: ",16384);
     message_prompt(ciphertext_wheel,ciphertext_wheel_buffer,"Enter the ciphertext wheel: ",128);
     message_prompt(plaintext_wheel,plaintext_wheel_buffer,"Enter the plaintext wheel: ",128);
-    if(strlen(ciphertext_wheel) != strlen(plaintext_wheel)){
-        do{
+    while(strlen(ciphertext_wheel) != strlen(plaintext_wheel)){
         printf("The ciphertext and plaintext wheel length do not match\nCiphertext Wheel:%s\nPlaintext Wheel:%s\nPress 1 to change the input, 2 to change the ciphertext wheel, or 3 to change the plaintext wheel: ",ciphertext_wheel,plaintext_wheel);
-        numerical_selection(ciphertext_wheel,plaintext_wheel,correction_buffer,ciphertext_wheel_buffer,plaintext_wheel_buffer,correction_buffer,encoded_input,encoded_buffer,is_confirmed,false);
-        }while(strlen(ciphertext_wheel) != strlen(plaintext_wheel));
+        is_confirmed=numerical_selection(ciphertext_wheel,plaintext_wheel,correction_buffer,ciphertext_wheel_buffer,plaintext_wheel_buffer,correction_buffer,encoded_input,encoded_buffer,false);
     }
-    is_same_set=wheel_set_checker(ciphertext_wheel,plaintext_wheel);
+    is_same_set=sorted_wheel_check(ciphertext_wheel,plaintext_wheel);
     while(!is_same_set){
         printf("The ciphertext and plaintext base character set do not match\nCiphertext Wheel:%s\nPlaintext Wheel:%s\nPress 1 to change the input, 2 to change the ciphertext wheel, or 3 to change the plaintext wheel: ",ciphertext_wheel,plaintext_wheel);
-        numerical_selection(ciphertext_wheel,plaintext_wheel,correction_buffer,ciphertext_wheel_buffer,plaintext_wheel_buffer,correction_buffer,encoded_input,encoded_buffer,is_confirmed,false);
-        is_same_set=wheel_set_checker(ciphertext_wheel,plaintext_wheel);
-        if(is_same_set){
-            break;
-        }
+        is_confirmed=numerical_selection(ciphertext_wheel,plaintext_wheel,correction_buffer,ciphertext_wheel_buffer,plaintext_wheel_buffer,correction_buffer,encoded_input,encoded_buffer,false);
+        is_same_set=sorted_wheel_check(ciphertext_wheel,plaintext_wheel);
         };
-    do{
+    while(!is_confirmed){
         printf("Encoded input:%sCiphertext wheel:%sPlaintext wheel:%sPress 1 to change the input, 2 to change the ciphertext wheel, 3 to change the plaintext wheel, or 'enter' to confirm your choices: ",encoded_input,ciphertext_wheel,plaintext_wheel);
-            if(!fgets(correction_buffer,16,stdin)){
-        printf("Unable to access input, exiting...\n");
-        exit(EXIT_FAILURE);
-        }
-        char *endptr;
-        errno = 0;    
-        long selection=strtol(correction_buffer,&endptr,10);
-        if(strlen(correction_buffer)==2 && strnicmp(correction_buffer,"q",1)==0){
-                printf("Thank you for running the chaocipher decoder, exiting...\n");
-                exit(EXIT_SUCCESS);
-            }
-        else if(endptr==correction_buffer && *endptr == '\n'){
-            is_confirmed=true;
-        }
-        else if(selection ==1){
-            message_prompt(encoded_input,encoded_buffer,"Enter the encoded input: ",16384);
-            }
-        else if(selection==2){
-            message_prompt(ciphertext_wheel,ciphertext_wheel_buffer,"Enter the ciphertext wheel: ",128);
-            }
-        else if(selection==3){
-            message_prompt(plaintext_wheel,plaintext_wheel_buffer,"Enter the plaintext wheel: ",128);
-        }
-    }while(!is_confirmed);
+        is_confirmed=numerical_selection(ciphertext_wheel,plaintext_wheel,correction_buffer,ciphertext_wheel_buffer,plaintext_wheel_buffer,correction_buffer,encoded_input,encoded_buffer,true);
+    }
+
     //Remove newline characters from input
     ciphertext_wheel[strcspn(ciphertext_wheel,"\n")]=0;
     plaintext_wheel[strcspn(plaintext_wheel,"\n")]=0;
@@ -146,7 +123,7 @@ int main(){
     snprintf(original_wheels,512,"Ciphertext Wheel: %s\nPlaintext Wheel: %s",ciphertext_wheel,plaintext_wheel);
     decoded=chaocipher_function(ciphertext_wheel,plaintext_wheel,encoded_input,true);
     printf("Result: %s\n",decoded);
-    snprintf(decoded_input,32768,"%s\nDecoded text: %s\n",original_wheels,decoded);
+    snprintf(decoded_input,32768,"Decoded text: %s\n%s",decoded,original_wheels);
     current_time= time(NULL);
     local_time= localtime(&current_time);
     strftime(file_name,sizeof(file_name),"chaocipher_decoded_%Y%m%d_%H%M%S.txt",local_time);

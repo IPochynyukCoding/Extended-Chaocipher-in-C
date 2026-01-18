@@ -166,7 +166,7 @@ int main(){
     wheel_uniqueness(plaintext_wheel,cipher_wheel);
     snprintf(original_wheels,512,"Ciphertext Wheel: %s\nPlaintext Wheel: %s",cipher_wheel,plaintext_wheel);
     encoded= is_case_insensitive ? chaocipher_function(cipher_wheel,plaintext_wheel,case_insensitive_buffer,is_decode):chaocipher_function(cipher_wheel,plaintext_wheel,input_buffer,is_decode);
-    snprintf(encoded_buffer,32768,"%s\nEncoded text: %s\n",original_wheels,encoded);
+    snprintf(encoded_buffer,32768,"Encoded text: %s\n%s",encoded,original_wheels);
     current_time= time(NULL);
     local_time= localtime(&current_time);
     strftime(filename,sizeof(filename),"chaocipher_encoded_%Y%m%d_%H%M%S.txt",local_time);
