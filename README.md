@@ -25,11 +25,11 @@ In case you want to build the executable yourself, use the following commands if
 Encoding:
 
 ```
-gcc -o chaocipher_encode chaocipher_encode.c chaocipher_functionality.c wheel_generator.c
+gcc -o chaocipher_encode chaocipher_encode.c chaocipher_functionality.c wheel_generator.c -O3
 ```
 
 Decoding:
 
 ```
-gcc -o chaocipher_decode chaocipher_decode.c chaocipher_functionality.c wheel_generator.c
+gcc -o chaocipher_decode chaocipher_decode.c chaocipher_functionality.c wheel_generator.c -O3
 ```
