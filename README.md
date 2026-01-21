@@ -1,6 +1,6 @@
 
 # Description
-An implementation in C of encoding and decoding the extended Chaocipher cipher alphabet (ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#&[]{}/,.?!:;()$*~_^|+-<>`') to make the cipher more secure and harder to brute force.
+An C implementation for encoding and decoding the extended Chaocipher cipher alphabet (ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#&[]{}/,.?!:;()$*~_^|+-<>`') to make the cipher more secure and harder to brute force.
 
 
 # How to use
