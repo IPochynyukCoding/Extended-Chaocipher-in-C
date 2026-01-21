@@ -36,9 +36,8 @@ char* ciphertext_shift(char* ciphertext_wheel,int index){
     //Get the first and second letters for the left side
     strslice(new_wheel,first_letter,first_index,second_index);
     strslice(new_wheel,second_letter,second_index,third_index);
-    strcat(left,second_letter);
     //Create the new wheel based on the above mentioned changes
-    snprintf(new_wheel,length+1,"%s%s%s",first_letter,left,right);
+    snprintf(new_wheel,length+1,"%s%s%s%s",first_letter,left,second_letter,right);
     //Clean up memory
     free(ciphertext_wheel);
     free(left);
@@ -63,8 +62,7 @@ char* plaintext_shift(char* plaintext_wheel, int index){
     strslice(plaintext_wheel,left,index+1,length);
     //Get all characters from the start to the selected character
     strslice(plaintext_wheel,right,first_index,index+1);
-    strcat(new_wheel,left);
-    strcat(new_wheel,right);
+    snprintf(new_wheel,length+1,"%s%s",left,right);
     //Get the first two characters for the left side
     strslice(new_wheel,first_characters,first_index,third_index);
     //Get the third character to put to middle
